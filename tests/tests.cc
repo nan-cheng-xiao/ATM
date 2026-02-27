@@ -74,3 +74,31 @@ TEST_CASE("Example: Print Prompt Ledger", "[ex-3]") {
   atm.PrintLedger("./prompt.txt", 12345678, 1234);
   REQUIRE(CompareFiles("./ex-1.txt", "./prompt.txt"));
 }
+
+TEST_CASE("注册同个账户复数次","[普通bug]") {
+  Atm atm;
+  atm.RegisterAccount(12345678, 1234, "Sam", 200.00);
+  REQUIRE_THROWS_AS(atm.RegisterAccount(12345678, 1234, "Bob", 100.00), std::incalid_argument);
+}
+
+TEST_CAST("取钱时候存负数钱", "[普通问题]") {
+  Atm atm;
+  atm.RegisterAccount(12345678,1234 ,"Kim", 3000.00);
+  REQUIRE_THROWS_AS(
+    atm.WithdrawCash(12345678, 1234, -50.00) , std::invalid_argument
+  );
+}
+
+TEST_CAST("存钱时候存负数钱", "[普通问题]") {
+  Atm atm;
+  atm.RegisterAccount(12345678,1234 ,"Kim", 3000.00);
+  REQUIRE_THROWS_AS(
+    atm.DepositCash(12345678, 1234, -50.00) , std::invalid_argument
+  );
+}
+
+TEST_CAST("无效账号", "[普通问题]") {
+  Atm atm;
+  REQUIRE_THROWS_AS(atm.PrintLedger("./out.txt", 99999999,9999), std::invalid_argument
+  );
+}
